@@ -30,7 +30,7 @@ def get_kern_list(idx):
         if -1 < idx < len(lines):
             return lines[idx].strip()
         elif idx >= len(lines):
-            print '[INFO] LEBench run concluded, finished testing on ' + str(len(lens)) + 'kernels.'
+            print '[INFO] LEBench run concluded, finished testing on ' + str(len(lines)) + 'kernels.'
             os.remove(KERN_INDEX_FILE)
         else:
             raise ValueError('Kernel index out of range, '
@@ -116,9 +116,9 @@ def run_bench():
     with open(result_error_filename, 'r') as fp:
         lines = fp.readlines()
         if len(lines) > 0:
-            print '[FATAL] test run encountered error: '
             for line in lines:
                 print line
+            raise Exception('[FATAL] test run encountered error.')
 
 
 if __name__ == '__main__':
