@@ -53,7 +53,7 @@ char *new_output_fn = NULL;
 
 #define final_formula ",=\"AVERAGE(B%d:INDIRECT(SUBSTITUTE(ADDRESS(1,COLUMN()-1,4),\"1\",\"%d\")))\",=\"STDEV.P(B%d:INDIRECT(SUBSTITUTE(ADDRESS(1,COLUMN()-2,4),\"1\",\"%d\")))\"\n",counter,counter,counter,counter
 
-#define OUTPUT_FILE_PATH	"/LEBench/"
+#define OUTPUT_FILE_PATH	""
 #define OUTPUT_FN		OUTPUT_FILE_PATH "output_file.csv"
 #define NEW_OUTPUT_FN	OUTPUT_FILE_PATH "new_output_file.csv"
 #define DEBUG false
@@ -877,7 +877,7 @@ void context_switch_test(struct timespec *diffTime) {
 
 int msg_size = -1;
 int curr_iter_limit = -1;
-#define sock "/LEBench/TEST_DIR/socket"
+#define sock "/TEST_DIR/socket"
 void send_test(struct timespec *timeArray, int iter, int *i) {
 	int retval;
 	int fds1[2], fds2[2];
