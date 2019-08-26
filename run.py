@@ -29,7 +29,7 @@ def get_kern_list(idx):
 
         if -1 < idx < len(lines):
             return lines[idx].strip()
-        elif indx >= len(lines):
+        elif idx >= len(lines):
             print '[INFO] LEBench run concluded, finished testing on ' + str(len(lens)) + 'kernels.'
             os.remove(KERN_INDEX_FILE)
         else:
