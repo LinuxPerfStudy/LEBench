@@ -1,3 +1,4 @@
+import os
 from subprocess import check_call, check_output, call
 fp = open('raw_kern', 'w')
 call(['ls', '/boot'], stdout=fp)
@@ -35,3 +36,4 @@ with open('kern_list', 'w') as fp:
         print v
         fp.write(v[3]+'\n')
 
+os.remove('raw_kern')
