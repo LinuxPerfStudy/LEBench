@@ -1,4 +1,3 @@
-# LEBench
 set the env var "LEBENCH_DIR" to the directory containing the repo
 
 run "crontab -e" and add the following entries:
@@ -8,10 +7,6 @@ PATH=/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin
 
 run "python get_kern.py" to generate the kernel list
 
-set the number in "iteration" to "-1"
-
-go to "TEST_DIR" and run "make"
-
-run "python run.py"
+run "sudo python run.py"
 
 results will be saved in .csv files in the LEBench folder
