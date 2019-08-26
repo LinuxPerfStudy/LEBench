@@ -30,8 +30,9 @@ def get_kern_list(idx):
         if -1 < idx < len(lines):
             return lines[idx].strip()
         elif idx >= len(lines):
-            print '[INFO] LEBench run concluded, finished testing on ' + str(len(lines)) + 'kernels.'
+            print '[INFO] LEBench run concluded, finished testing on ' + str(len(lines)) + ' kernels.'
             os.remove(KERN_INDEX_FILE)
+            sys.exit(0)
         else:
             raise ValueError('Kernel index out of range, '
                         'expect index to be between 0 and ' + str(len(lines)))
