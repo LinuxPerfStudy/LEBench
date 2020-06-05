@@ -806,6 +806,13 @@ void context_switch_test(struct timespec *diffTime) {
 	if (retval != 0) printf("[error] failed to open pipe2.\n");
 	
 	char w = 'a', r;
+	cpu_set_t cpuset;
+	int prio;
+
+	retval = sched_getaffinity(getpid(), sizeof(cpuset), &cpuset);
+	if (retval == -1) printf("[error] failed to get affinity.\n");
+	prio = getpriority(PRIO_PROCESS, 0);
+	if (prio == -1) printf("[error] failed to get priority.\n");
 	
 	int forkId = fork();
 	if (forkId > 0) { // is parent
@@ -864,7 +871,12 @@ void context_switch_test(struct timespec *diffTime) {
 	} else {
 		printf("[error] failed to fork.\n");
 	}
-	
+
+	retval = sched_setaffinity(getpid(), sizeof(cpuset), &cpuset);
+	if (retval == -1) printf("[error] failed to restore affinity.\n");
+	retval = setpriority(PRIO_PROCESS, 0, prio);
+	if (retval == -1) printf("[error] failed to restore priority.\n");
+
 	struct timespec sum;
 	sum.tv_sec = 0;
 	sum.tv_nsec = 0;
