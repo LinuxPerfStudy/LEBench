@@ -1282,8 +1282,7 @@ int main(int argc, char *argv[])
 	/*****************************************/
 	/*            CONTEXT SWITCH             */
 	/*****************************************/
-	// info.iter = BASE_ITER * 10;
-	info.iter =  100;
+	info.iter = BASE_ITER * 10;
 	info.name = "context siwtch";
 	one_line_test(fp, copy, context_switch_test, &info);
 
