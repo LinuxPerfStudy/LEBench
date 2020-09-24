@@ -1110,39 +1110,54 @@ void recv_test(struct timespec *timeArray, int iter, int *i) {
 
 }
 
+// ASCII Art for Debugging
+// Reset: \e[0m 
+// Yellow Font: \e[0;33m 
+// Green Font: \e[0;32m
+// Blue Font: \e[0;34m
+#define debug(...) {printf("\e[0;33m[DEBUG] "); printf(__VA_ARGS__); printf("\e[0m \n");};
+#define info(...) {printf("\e[0;32m[INFO] "); printf(__VA_ARGS__); printf("\e[0m \n");};
+#define checkpoint(...) {printf("\e[0;35m[CHECK] "); printf(__VA_ARGS__); printf("\e[0m \n");};
+
+
+void usage(){
+	printf("Usage:\n");
+	printf(" LEBENCH_DIR=/LEBench/ PATH=/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin /LEBench/TEST_DIR/OS_Eval 0 4.12.0-custom\n");
+	printf(" LEBENCH_DIR=/LEBench/ PATH=/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin /LEBench/TEST_DIR/OS_Eval 0 4.4.0-generic\n");
+}
+
+void quit(){
+	printf("\e[0;33m[EXIT] Reached the end of debug: %s::%d\e[0m\n", __FILE__, __LINE__);
+	exit(1);
+}
+
 int main(int argc, char *argv[])
 {
 	if (argc != 3){
 		printf("Invalid arguments, gave %d not 3\n",argc);
-		printf("Usage:\n");
-		printf(" /LEBench/TEST_DIR/OS_Eval 0 4.12.0-custom\n");
-		printf(" /LEBench/TEST_DIR/OS_Eval 0 4.4.0-generic\n");
-		return(0);
+		usage();
+		exit(1);
 	}
 
-	printf("[INFO] Attempt to get envion $LEBENCH_DIR\n");
+	info("Attempt to get envion $LEBENCH_DIR");
 	home = getenv("LEBENCH_DIR");
 	// printf("[DEBUG] Reached line: %s::%d\n", __FILE__, __LINE__);
 	if (!home || strlen(home) == 0){
 		printf("Env variable LEBENCH_DIR not found!\n");
+		usage();
 		exit(1);
 	}
-	printf("[DEBUG] LEBENCH_DIR=%s\n", home);
-	exit(1);
+	debug("LEBENCH_DIR=%s", home);
 	
 	output_fn = (char *)malloc(500*sizeof(char));
 	strcpy(output_fn, home);
-	printf("%d\n", __LINE__);
 	strcat(output_fn, OUTPUT_FN);
 
-	printf("%d\n", __LINE__);
 	new_output_fn = (char *)malloc(500*sizeof(char));
-	printf("%d\n", __LINE__);
 	strcpy(new_output_fn, home);
-	printf("%d\n", __LINE__);
 	strcat(new_output_fn, NEW_OUTPUT_FN);
-	printf("%d\n", __LINE__);
-	exit(1);
+
+	debug("Write output_fn to %s and new_output_fn to %s", output_fn, new_output_fn);
 
 	struct timespec startTime, endTime;
 	clock_gettime(CLOCK_MONOTONIC, &startTime);
@@ -1153,10 +1168,11 @@ int main(int argc, char *argv[])
 	FILE *copy = NULL;
 	fp=fopen(new_output_fn,"w");
 	isFirstIteration = false;
+
 	if (*iteration == '0'){isFirstIteration = true;}
 	if (!isFirstIteration)
 	{
-		printf("Wait until the test file is writte...\n");
+		debug("Wait until the test file is written...");
 		copy=fopen(output_fn,"r");
 		char ch;
 		int increment = 0;
@@ -1173,7 +1189,7 @@ int main(int argc, char *argv[])
 			}
 			fputc(ch,fp);
 		}
-		printf("Test file write finished.\n");
+		debug("Test file write finished.");
 	}
 	else
 	{
@@ -1181,7 +1197,7 @@ int main(int argc, char *argv[])
 	}
 	fprintf(fp,"%s,\n",str_os_name);
 	
-	testInfo info;	
+	testInfo info;
 
 	/*****************************************/
 	/*               GETPID                  */
@@ -1200,7 +1216,9 @@ int main(int argc, char *argv[])
 	info.iter = BASE_ITER * 100;
 	info.name = "getpid";
 	one_line_test(fp, copy, getpid_test, &info);
-
+	
+	checkpoint("Reached line: %s::%d", __FILE__, __LINE__);
+	quit();
 
 	
 	/*****************************************/
