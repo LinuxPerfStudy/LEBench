@@ -891,6 +891,12 @@ int msg_size = -1;
 int curr_iter_limit = -1;
 #define sock "/TEST_DIR/socket"
 void send_test(struct timespec *timeArray, int iter, int *i) {
+
+	if( access( sock, F_OK ) != -1 ) {
+		remove(sock);
+		printf("[INFO] Removed socket: %s.\n", sock);
+	}
+
 	int retval;
 	int fds1[2], fds2[2];
 	retval = pipe(fds1);
@@ -920,12 +926,12 @@ void send_test(struct timespec *timeArray, int iter, int *i) {
 		socklen_t client_addr_len;
 	
 		int fd_server = socket(AF_UNIX, SOCK_STREAM, 0);
-		if (fd_server < 0) printf("[error] failed to open server socket.\n");
+		if (fd_server < 0) perror("[error] failed to open server socket.\n");
 	
 		retval = bind(fd_server, (struct sockaddr *) &server_addr, sizeof(struct sockaddr_un));
-		if (retval == -1) printf("[error] failed to bind.\n");
+		if (retval == -1) perror("[error] failed to bind.\n");
 		retval = listen(fd_server, 10); 
-		if (retval == -1) printf("[error] failed to listen.\n");
+		if (retval == -1) perror("[error] failed to listen.\n");
 		if (DEBUG) printf("Waiting for connection\n");
 
 		write(fds1[1], &w, 1);
@@ -943,7 +949,7 @@ void send_test(struct timespec *timeArray, int iter, int *i) {
 
 
         	kill(getpid(),SIGINT);
-		printf("[error] unable to kill child process\n");
+		perror("[error] unable to kill child process\n");
 		return;
 
 	} else {
@@ -954,9 +960,9 @@ void send_test(struct timespec *timeArray, int iter, int *i) {
 		read(fds1[0], &r, 1);
 
 		int fd_client = socket(AF_UNIX, SOCK_STREAM, 0);
-		if (fd_client < 0) printf("[error] failed to open client socket.\n");
+		if (fd_client < 0) perror("[error] failed to open client socket.\n");
 		retval = connect(fd_client, (struct sockaddr *) &server_addr, sizeof(struct sockaddr_un));
-		if (retval == -1) printf("[error] failed to connect.\n");
+		if (retval == -1) perror("[error] failed to connect.\n");
 
 		char *buf = (char *) malloc (sizeof(char) * msg_size);
 		for (int i = 0; i < msg_size; i++) {
@@ -972,7 +978,7 @@ void send_test(struct timespec *timeArray, int iter, int *i) {
 			add_diff_to_sum(&timeArray[*i], endTime, startTime);
 
 			if (retval == -1) {
-				printf("[error] failed to send.\n");
+				perror("[error] failed to send.\n");
 			}
 		}
 
@@ -992,11 +998,11 @@ void recv_test(struct timespec *timeArray, int iter, int *i) {
 	int fds1[2], fds2[2];
 	retval = pipe(fds1);
 	if (retval != 0) {
-		printf("[error] failed to open pipe1.\n");
+		perror("[error] failed to open pipe1.\n");
 	}
 	retval = pipe(fds2);
 	if (retval != 0) {
-		printf("[error] failed to open pipe2.\n");
+		perror("[error] failed to open pipe2.\n");
 	}
 	char w = 'b', r;	
 	
@@ -1008,7 +1014,7 @@ void recv_test(struct timespec *timeArray, int iter, int *i) {
 	int forkId = fork();
 
 	if (forkId < 0) {
-		printf("[error] fork failed.\n");
+		perror("[error] fork failed.\n");
 		return;
 	}
 
@@ -1020,12 +1026,12 @@ void recv_test(struct timespec *timeArray, int iter, int *i) {
 		socklen_t client_addr_len;
 	
 		int fd_server = socket(AF_UNIX, SOCK_STREAM, 0);
-		if (fd_server < 0) printf("[error] failed to open server socket.\n");
+		if (fd_server < 0) perror("[error] failed to open server socket.\n");
 	
 		retval = bind(fd_server, (struct sockaddr *) &server_addr, sizeof(struct sockaddr_un));
-		if (retval == -1) printf("[error] failed to bind.\n");
+		if (retval == -1) perror("[error] failed to bind.\n");
 		retval = listen(fd_server, 10);
-		if (retval == -1) printf("[error] failed to listen.\n");
+		if (retval == -1) perror("[error] failed to listen.\n");
 		if (DEBUG) printf("Waiting for connection\n");
 
 		write(fds1[1], &w, 1);
@@ -1049,7 +1055,7 @@ void recv_test(struct timespec *timeArray, int iter, int *i) {
 			add_diff_to_sum(&timeArray[*i], endTime, startTime);
 
 			if (retval == -1) {
-				printf("[error] failed to recv.\n");
+				perror("[error] failed to recv.\n");
 			}
 		}
 
@@ -1071,9 +1077,9 @@ void recv_test(struct timespec *timeArray, int iter, int *i) {
 		read(fds1[0], &r, 1);
 
 		int fd_client = socket(AF_UNIX, SOCK_STREAM, 0);
-		if (fd_client < 0) printf("[error] failed to open client socket.\n");
+		if (fd_client < 0) perror("[error] failed to open client socket.\n");
 		retval = connect(fd_client, (struct sockaddr *) &server_addr, sizeof(struct sockaddr_un));
-		if (retval == -1) printf("[error] failed to connect.\n");
+		if (retval == -1) perror("[error] failed to connect.\n");
 
 		char *buf = (char *) malloc (sizeof(char) * msg_size);
 		for (int i = 0; i < msg_size; i++) {
@@ -1085,7 +1091,7 @@ void recv_test(struct timespec *timeArray, int iter, int *i) {
 			retval = syscall(SYS_sendto, fd_client, buf, msg_size, MSG_DONTWAIT, NULL, 0);
 
 			if (retval == -1) {
-				printf("[error] failed to send.\n");
+				perror("[error] failed to send.\n");
 			}
 		}
 
@@ -1097,7 +1103,7 @@ void recv_test(struct timespec *timeArray, int iter, int *i) {
 		free(buf);
 
         	kill(getpid(),SIGINT);
-		printf("[error] unable to kill child process\n");
+		perror("[error] unable to kill child process\n");
 		return;
 
 	}
@@ -1156,7 +1162,7 @@ int main(int argc, char *argv[])
 	/*****************************************/
 	/*               GETPID                  */
 	/*****************************************/
-
+	printf("[INFO] getpid Test Start");
 	sleep(60);
 	info.iter = BASE_ITER * 100;
 	info.name = "ref";
@@ -1176,6 +1182,7 @@ int main(int argc, char *argv[])
 	/*****************************************/
 	/*            CONTEXT SWITCH             */
 	/*****************************************/
+	printf("[INFO] context switch Test Start");
 	info.iter = BASE_ITER * 10;
 	info.name = "context siwtch";
 	one_line_test(fp, copy, context_switch_test, &info);
@@ -1184,6 +1191,7 @@ int main(int argc, char *argv[])
 	/*****************************************/
 	/*             SEND & RECV               */
 	/*****************************************/
+	printf("[INFO] send & recv Test Start");
 	msg_size = 1;	
 	curr_iter_limit = 50;
 	printf("msg size: %d.\n", msg_size);
@@ -1213,6 +1221,7 @@ int main(int argc, char *argv[])
 	/*****************************************/
 	/*         FORK & THREAD CREATE          */
 	/*****************************************/
+	printf("[INFO] fork & thread Test Start");
 	info.iter = BASE_ITER * 2;
 	info.name = "fork";
 	two_line_test(fp, copy, forkTest, &info);
@@ -1255,6 +1264,8 @@ int main(int argc, char *argv[])
 	/*****************************************/
 	/*     WRITE & READ & MMAP & MUNMAP      */
 	/*****************************************/
+	
+	printf("[INFO] write & read & mmap & munmap Test Start");
 
 	/****** SMALL ******/
 	file_size = PAGE_SIZE;	
@@ -1358,6 +1369,7 @@ int main(int argc, char *argv[])
 	/*****************************************/
 	/*              WRITE & READ             */
 	/*****************************************/
+	printf("[INFO] write & read (select, poll, epoll) Test Start");
 
 	/****** SMALL ******/
 	fd_count = 10;
