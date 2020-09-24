@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <libgen.h>
 #include <dirent.h>
+#include <sys/resource.h>
 #include <time.h>
 #include <string.h>
 #include <sys/socket.h>
@@ -484,20 +485,24 @@ void forkTest(struct timespec *childTime, struct timespec *parentTime)
     clock_gettime(CLOCK_MONOTONIC,&timeA);
 
     int forkId = fork();
+
     if (forkId == 0){
         clock_gettime(CLOCK_MONOTONIC, timeB);
         kill(getpid(),SIGINT);
-	printf("[error] unable to kill child process\n");
-	return;
+		except("[error] unable to kill child process\n");
+		return;
     } else if (forkId > 0){
         clock_gettime(CLOCK_MONOTONIC,&timeC);
         wait(&status);
-	add_diff_to_sum(childTime,*timeB,timeA);
-	add_diff_to_sum(parentTime,timeC,timeA);
+		add_diff_to_sum(childTime, *timeB, timeA);
+		add_diff_to_sum(parentTime, timeC, timeA);
+		info("Fork success: %d\n", forkId);
     } else {
-    	printf("[error] fork failed.\n");
+    	// debug("[error] fork failed.\n");
+		perror("[error] fork failed.");
     }
-    munmap(timeB, sizeof(struct timespec));
+    
+	munmap(timeB, sizeof(struct timespec));
     return;
 }
 
@@ -634,9 +639,13 @@ void page_fault_test(struct timespec *diffTime) {
 	char a = *((char *)addr);
 	clock_gettime(CLOCK_MONOTONIC,&endTime);
 	
-	printf("read: %c\n", a);
+	// printf("read: %c\n", a);
+	if (a != 'a'){
+		except("Read %c != 'a'", %c);
+	}
 	syscall(SYS_munmap, addr, file_size);
-        close(fd);
+    close(fd);
+	
 	add_diff_to_sum(diffTime, endTime, startTime);
 	return;
 }
