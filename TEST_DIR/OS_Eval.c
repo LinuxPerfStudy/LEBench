@@ -3,6 +3,8 @@
 #include <time.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <libgen.h>
+#include <dirent.h>
 #include <time.h>
 #include <string.h>
 #include <sys/socket.h>
@@ -25,6 +27,35 @@
 #include <sys/time.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+
+
+/*******************************************/
+// ASCII Art for Debugging
+// Reset: \e[0m 
+// Yellow Font: \e[0;33m 
+// Green Font: \e[0;32m
+// Blue Font: \e[0;34m
+#define debug(...) {printf("\e[0;33m[DEBUG] [%s::%d] ", __FILE__, __LINE__); printf(__VA_ARGS__); printf("\e[0m \n");};
+
+#define info(...) {printf("\e[0;32m[INFO] [%s::%d] ", __FILE__, __LINE__); printf(__VA_ARGS__); printf("\e[0m \n");};
+
+#define checkpoint(...) {printf("\e[0;35m[CHECK] [%s::%d] ", __FILE__, __LINE__); printf(__VA_ARGS__); printf("\e[0m \n");};
+
+void usage(){
+	printf("Usage:\n");
+	printf(" LEBENCH_DIR=/LEBench/ PATH=/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin /LEBench/TEST_DIR/OS_Eval 0 4.12.0-custom\n");
+	printf(" LEBENCH_DIR=/LEBench/ PATH=/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin /LEBench/TEST_DIR/OS_Eval 0 4.4.0-generic\n");
+}
+
+void quit(){
+	
+}
+
+#define quit() {printf("\e[0;36m[EXIT] [%s::%d] ====== Reached the end of debug ======\e[0m\n", __FILE__, __LINE__); exit(1);}
+
+#define except(...) {printf("\e[0;31m[ERROR][%s::%d]", __FILE__, __LINE__); perror(""); printf(__VA_ARGS__); printf("\e[0m \n"); exit(1);};
+
+/*******************************************/
 
 int counter=3;
 bool  isFirstIteration = false;
