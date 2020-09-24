@@ -183,10 +183,12 @@ if __name__ == '__main__':
         # We are at the right kernel version, actually run LEBench.
         run_bench()
 
-    if DEBUG: print '[DEBUG] Preparing to modify grub.'
-    if generate_grub_file(WORKING_DIR + 'template/grub', get_kern_list(next_kern_idx)):
-        install_grub_file()
-        if DEBUG: print '[DEBUG] Done configuring grub for the next kernel.'
-        restart()
+    print '[INFO] * End of execution *'
+    print '[INFO] * Not intend to restart the machine *'
+    # if DEBUG: print '[DEBUG] Preparing to modify grub.'
+    # if generate_grub_file(WORKING_DIR + 'template/grub', get_kern_list(next_kern_idx)):
+    #     install_grub_file()
+    #     if DEBUG: print '[DEBUG] Done configuring grub for the next kernel.'
+    #     restart()
 
 
