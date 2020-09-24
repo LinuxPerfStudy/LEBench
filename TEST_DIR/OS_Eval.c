@@ -1112,19 +1112,41 @@ void recv_test(struct timespec *timeArray, int iter, int *i) {
 
 int main(int argc, char *argv[])
 {
+	if (argc != 3){
+		printf("Invalid arguments, gave %d not 3\n",argc);
+		printf("Usage:\n");
+		printf(" /LEBench/TEST_DIR/OS_Eval 0 4.12.0-custom\n");
+		printf(" /LEBench/TEST_DIR/OS_Eval 0 4.4.0-generic\n");
+		return(0);
+	}
+
+	printf("[INFO] Attempt to get envion $LEBENCH_DIR\n");
 	home = getenv("LEBENCH_DIR");
+	// printf("[DEBUG] Reached line: %s::%d\n", __FILE__, __LINE__);
+	if (!home || strlen(home) == 0){
+		printf("Env variable LEBENCH_DIR not found!\n");
+		exit(1);
+	}
+	printf("[DEBUG] LEBENCH_DIR=%s\n", home);
+	exit(1);
 	
 	output_fn = (char *)malloc(500*sizeof(char));
 	strcpy(output_fn, home);
+	printf("%d\n", __LINE__);
 	strcat(output_fn, OUTPUT_FN);
 
+	printf("%d\n", __LINE__);
 	new_output_fn = (char *)malloc(500*sizeof(char));
+	printf("%d\n", __LINE__);
 	strcpy(new_output_fn, home);
+	printf("%d\n", __LINE__);
 	strcat(new_output_fn, NEW_OUTPUT_FN);
+	printf("%d\n", __LINE__);
+	exit(1);
 
 	struct timespec startTime, endTime;
 	clock_gettime(CLOCK_MONOTONIC, &startTime);
-	if (argc != 3){printf("Invalid arguments, gave %d not 3",argc);return(0);}
+	
 	char *iteration = argv[1];
 	char *str_os_name = argv[2];
 	FILE *fp;
@@ -1134,6 +1156,7 @@ int main(int argc, char *argv[])
 	if (*iteration == '0'){isFirstIteration = true;}
 	if (!isFirstIteration)
 	{
+		printf("Wait until the test file is writte...\n");
 		copy=fopen(output_fn,"r");
 		char ch;
 		int increment = 0;
@@ -1150,6 +1173,7 @@ int main(int argc, char *argv[])
 			}
 			fputc(ch,fp);
 		}
+		printf("Test file write finished.\n");
 	}
 	else
 	{
@@ -1162,8 +1186,8 @@ int main(int argc, char *argv[])
 	/*****************************************/
 	/*               GETPID                  */
 	/*****************************************/
-	printf("[INFO] getpid Test Start");
-	sleep(60);
+	printf("Sleep 10 second......\n");
+	sleep(10);
 	info.iter = BASE_ITER * 100;
 	info.name = "ref";
 	one_line_test(fp, copy, ref_test, &info);
