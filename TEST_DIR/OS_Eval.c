@@ -1254,8 +1254,8 @@ int main(int argc, char *argv[])
 	/*****************************************/
 	/*               GETPID                  */
 	/*****************************************/
-	printf("Sleep 10 second......\n");
-	sleep(10);
+	// info("Sleep 60 seconds to get the process priority");
+	// sleep(60);
 	info.iter = BASE_ITER * 100;
 	info.name = "ref";
 	one_line_test(fp, copy, ref_test, &info);
