@@ -1041,7 +1041,7 @@ void send_test(struct timespec *timeArray, int iter, int *i) {
 			add_diff_to_sum(&timeArray[*i], endTime, startTime);
 
 			if (retval == -1) {
-				perror("[error] failed to send.\n");
+				except("failed to send.");
 			}
 		}
 
@@ -1061,11 +1061,11 @@ void recv_test(struct timespec *timeArray, int iter, int *i) {
 	int fds1[2], fds2[2];
 	retval = pipe(fds1);
 	if (retval != 0) {
-		perror("[error] failed to open pipe1.\n");
+		except("[error] failed to open pipe1.\n");
 	}
 	retval = pipe(fds2);
 	if (retval != 0) {
-		perror("[error] failed to open pipe2.\n");
+		except("[error] failed to open pipe2.\n");
 	}
 	char w = 'b', r;	
 	
@@ -1077,7 +1077,7 @@ void recv_test(struct timespec *timeArray, int iter, int *i) {
 	int forkId = fork();
 
 	if (forkId < 0) {
-		perror("[error] fork failed.\n");
+		except("[error] fork failed.\n");
 		return;
 	}
 
@@ -1089,12 +1089,12 @@ void recv_test(struct timespec *timeArray, int iter, int *i) {
 		socklen_t client_addr_len;
 	
 		int fd_server = socket(AF_UNIX, SOCK_STREAM, 0);
-		if (fd_server < 0) perror("[error] failed to open server socket.\n");
+		if (fd_server < 0) except("[error] failed to open server socket.\n");
 	
 		retval = bind(fd_server, (struct sockaddr *) &server_addr, sizeof(struct sockaddr_un));
-		if (retval == -1) perror("[error] failed to bind.\n");
+		if (retval == -1) except("[error] failed to bind.\n");
 		retval = listen(fd_server, 10);
-		if (retval == -1) perror("[error] failed to listen.\n");
+		if (retval == -1) except("[error] failed to listen.\n");
 		if (DEBUG) printf("Waiting for connection\n");
 
 		write(fds1[1], &w, 1);
@@ -1118,7 +1118,7 @@ void recv_test(struct timespec *timeArray, int iter, int *i) {
 			add_diff_to_sum(&timeArray[*i], endTime, startTime);
 
 			if (retval == -1) {
-				perror("[error] failed to recv.\n");
+				except("[error] failed to recv.\n");
 			}
 		}
 
@@ -1140,9 +1140,9 @@ void recv_test(struct timespec *timeArray, int iter, int *i) {
 		read(fds1[0], &r, 1);
 
 		int fd_client = socket(AF_UNIX, SOCK_STREAM, 0);
-		if (fd_client < 0) perror("[error] failed to open client socket.\n");
+		if (fd_client < 0) except("[error] failed to open client socket.\n");
 		retval = connect(fd_client, (struct sockaddr *) &server_addr, sizeof(struct sockaddr_un));
-		if (retval == -1) perror("[error] failed to connect.\n");
+		if (retval == -1) except("[error] failed to connect.\n");
 
 		char *buf = (char *) malloc (sizeof(char) * msg_size);
 		for (int i = 0; i < msg_size; i++) {
@@ -1154,7 +1154,7 @@ void recv_test(struct timespec *timeArray, int iter, int *i) {
 			retval = syscall(SYS_sendto, fd_client, buf, msg_size, MSG_DONTWAIT, NULL, 0);
 
 			if (retval == -1) {
-				perror("[error] failed to send.\n");
+				except("[error] failed to send.\n");
 			}
 		}
 
@@ -1166,7 +1166,7 @@ void recv_test(struct timespec *timeArray, int iter, int *i) {
 		free(buf);
 
         	kill(getpid(),SIGINT);
-		perror("[error] unable to kill child process\n");
+		except("[error] unable to kill child process\n");
 		return;
 
 	}
