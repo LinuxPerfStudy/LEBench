@@ -265,16 +265,27 @@ void one_line_test(FILE *fp, FILE *copy, void (*f)(struct timespec*), testInfo *
 	struct timespec testStart, testEnd;
 	clock_gettime(CLOCK_MONOTONIC,&testStart);
 
-	printf("Performing test %s.\n", info->name);
+	info("Performing test %s.\n", info->name);
 
 	int runs = info->iter;
-	printf("Total test iteration %d.\n", runs);
+	info("Total test iteration %d.\n", runs);
 
 	struct timespec* timeArray = (struct timespec *)malloc(sizeof(struct timespec) * runs);
+	
+	double bound = 0.1;
 	for (int i=0; i < runs; i++) {
 		timeArray[i].tv_sec = 0;
 		timeArray[i].tv_nsec = 0;
 		(*f)(&timeArray[i]);
+
+		if (i == 0){
+			info("[%s] Sample time: %ld",info->name, timeArray[i].tv_sec);
+		}
+		if((i / runs) > bound){
+			info("[%s] %d/%d Iteration done...", info->name, i, runs);
+			info("[%s] Sample time: %ld",info->name, timeArray[i].tv_sec);
+			bound = bound + 0.1;
+		}
 	}
 	struct timespec *sum = calc_sum2(timeArray, runs);
 	struct timespec *average = calc_average(sum, runs);  
@@ -496,9 +507,7 @@ void forkTest(struct timespec *childTime, struct timespec *parentTime)
         wait(&status);
 		add_diff_to_sum(childTime, *timeB, timeA);
 		add_diff_to_sum(parentTime, timeC, timeA);
-		info("Fork success: %d\n", forkId);
     } else {
-    	// debug("[error] fork failed.\n");
 		perror("[error] fork failed.");
     }
     
@@ -641,7 +650,7 @@ void page_fault_test(struct timespec *diffTime) {
 	
 	// printf("read: %c\n", a);
 	if (a != 'a'){
-		except("Read %c != 'a'", %c);
+		debug("Read %c != 'a'", a);
 	}
 	syscall(SYS_munmap, addr, file_size);
     close(fd);
