@@ -15,10 +15,9 @@ PATH=/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin
 ```
 
 # Run LEBench (without any configuration)
-cd /LEBench
-python get_kern.py
-LEBENCH_DIR=/LEBench/ PATH=/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin sudo python run.py
-# LEBENCH_DIR=/LEBench/ PATH=/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin /LEBench/TEST_DIR/OS_Eval 0 4.15.0-101-generic
+# cd /LEBench
+# python get_kern.py
+# LEBENCH_DIR=/LEBench/ PATH=/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin sudo python run.py
 
 # Compile the linux kernel
 cd /mydata
@@ -27,3 +26,15 @@ git checkout v4.12
 make menuconfig
 make -j `getconf _NPROCESSORS_ONLN` deb-pkg LOCALVERSION=-custom
 sudo sudo dpkg -i *.deb
+
+# -------------------
+# LEBench commands
+# -------------------
+cd /LEBench/TEST_DIR; 
+make && LEBENCH_DIR=/LEBench/ PATH=/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin sudo -E /LEBench/TEST_DIR/OS_Eval 0 4.12.0-custom
+
+cd /LEBench/TEST_DIR; 
+make && LEBENCH_DIR=/LEBench/ PATH=/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin sudo -E /LEBench/TEST_DIR/OS_Eval 0 4.12.0-custom
+
+cd /LEBench/TEST_DIR;
+make && LEBENCH_DIR=/LEBench/ PATH=/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin sudo -E /LEBench/TEST_DIR/OS_Eval 0 4.15.0-101-generic
