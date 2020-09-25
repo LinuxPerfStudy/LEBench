@@ -33,8 +33,5 @@ sudo sudo dpkg -i *.deb
 cd /LEBench/TEST_DIR; 
 make && LEBENCH_DIR=/LEBench/ PATH=/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin sudo -E /LEBench/TEST_DIR/OS_Eval 0 4.12.0-custom
 
-cd /LEBench/TEST_DIR; 
-make && LEBENCH_DIR=/LEBench/ PATH=/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin sudo -E /LEBench/TEST_DIR/OS_Eval 0 4.12.0-custom
-
 cd /LEBench/TEST_DIR;
 make && LEBENCH_DIR=/LEBench/ PATH=/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin sudo -E /LEBench/TEST_DIR/OS_Eval 0 4.15.0-101-generic
