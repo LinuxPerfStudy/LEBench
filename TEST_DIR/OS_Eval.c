@@ -1003,7 +1003,8 @@ void recv_test(struct timespec *timeArray, int iter, int *i) {
 	struct sockaddr_un server_addr;
 	memset(&server_addr, 0, sizeof(struct sockaddr_un));
 	server_addr.sun_family = AF_UNIX;
-	strncpy(server_addr.sun_path, sock, sizeof(server_addr.sun_path) - 1); 
+	strncpy(server_addr.sun_path, home, sizeof(server_addr.sun_path) - 1); 
+	strncat(server_addr.sun_path, sock, sizeof(server_addr.sun_path) - 1); 
 
 	int forkId = fork();
 
