@@ -916,9 +916,6 @@ void send_test(struct timespec *timeArray, int iter, int *i) {
 		close(fds1[0]);
 		close(fds2[1]);
 
-		struct sockaddr_un client_addr;
-		socklen_t client_addr_len;
-	
 		int fd_server = socket(AF_UNIX, SOCK_STREAM, 0);
 		if (fd_server < 0) printf("[error] failed to open server socket.\n");
 	
@@ -930,7 +927,8 @@ void send_test(struct timespec *timeArray, int iter, int *i) {
 
 		write(fds1[1], &w, 1);
 
-		int fd_connect = accept(fd_server, (struct sockaddr *) &client_addr, &client_addr_len);
+		int fd_connect = accept(fd_server, (struct sockaddr *)0,
+					(socklen_t *)0);
 		if (DEBUG) printf("Connection accepted.\n");
 
 		read(fds2[0], &r, 1);
@@ -1016,9 +1014,6 @@ void recv_test(struct timespec *timeArray, int iter, int *i) {
 		close(fds1[0]);
 		close(fds2[1]);
 
-		struct sockaddr_un client_addr;
-		socklen_t client_addr_len;
-	
 		int fd_server = socket(AF_UNIX, SOCK_STREAM, 0);
 		if (fd_server < 0) printf("[error] failed to open server socket.\n");
 	
@@ -1030,7 +1025,8 @@ void recv_test(struct timespec *timeArray, int iter, int *i) {
 
 		write(fds1[1], &w, 1);
 
-		int fd_connect = accept(fd_server, (struct sockaddr *) &client_addr, &client_addr_len);
+		int fd_connect = accept(fd_server, (struct sockaddr *)0,
+					(socklen_t *)0);
 		if (DEBUG) printf("Connection accepted.\n");
 
 		read(fds2[0], &r, 1);
