@@ -918,6 +918,8 @@ void send_test(struct timespec *timeArray, int iter, int *i) {
 
 		int fd_server = socket(AF_UNIX, SOCK_STREAM, 0);
 		if (fd_server < 0) printf("[error] failed to open server socket.\n");
+		
+    		unlink(server_addr.sun_path);
 	
 		retval = bind(fd_server, (struct sockaddr *) &server_addr, sizeof(struct sockaddr_un));
 		if (retval == -1) printf("[error] failed to bind.\n");
@@ -1017,6 +1019,8 @@ void recv_test(struct timespec *timeArray, int iter, int *i) {
 
 		int fd_server = socket(AF_UNIX, SOCK_STREAM, 0);
 		if (fd_server < 0) printf("[error] failed to open server socket.\n");
+		
+	    	unlink(server_addr.sun_path);
 	
 		retval = bind(fd_server, (struct sockaddr *) &server_addr, sizeof(struct sockaddr_un));
 		if (retval == -1) printf("[error] failed to bind.\n");
